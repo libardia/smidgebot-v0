@@ -1,28 +1,44 @@
-import discord, os, dotenv
+import discord, os, dotenv, datetime
 from collections import defaultdict
 
 dotenv.load_dotenv()
 client = discord.Client()
+logfile = 'log.txt'
+
+# Logging ==================================
+
+def log(msg):
+    with open(logfile, 'a') as f:
+        logged = f'[{datetime.datetime.now()}] {msg}\n'
+        print(logged, end='')
+        f.write(logged)
 
 # Command decorator and storage ============
 
 commands = {}
 
 def command(func):
-    commands[func.__name__] = func
-    return func
+    async def wrapper(*args):
+        log(f'Running command \'{func.__name__}\' with args {args[1:]}')
+        await func(*args)
+    commands[func.__name__] = wrapper
+    return wrapper
 
 # Commands =================================
 
 @command
-async def test(message, string1, string2):
-    await message.channel.send(f'String 1: {string1}\nString 2: {string2}')
+async def start(message):
+    await message.channel.send(f'Okay, I\'ll remind everyone about the session!')
 
-# ==========================================
+@command
+async def test(message, a, b):
+    await message.channel.send(f'{a} + {b} is {int(a) + int(b)}')
+
+# Discord stuff ============================
 
 @client.event
 async def on_ready():
-    print(f'We have logged in as "{client.user.name}"')
+    log(f'We have logged in as "{client.user}"')
 
 @client.event
 async def on_message(message):
@@ -33,6 +49,6 @@ async def on_message(message):
         try:
             await commands[command](message, *args)
         except KeyError:
-            await message.channel.send(f'Command `{command}` not found')
+            log(f'No command \'{command}\'')
 
 client.run(os.getenv('TOKEN'))
