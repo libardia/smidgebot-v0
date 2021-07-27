@@ -1,4 +1,4 @@
-import discord, os, dotenv, datetime, threading, time, schedule, asyncio, traceback
+import discord, os, dotenv, datetime, traceback
 from discord.ext import tasks
 from collections import defaultdict
 
@@ -118,6 +118,24 @@ async def list_exclude(message):
     else:
         await message.channel.send('I\'m not actually keeping track right now.')
 
+@command
+async def help(message):
+    data = {
+        'help': 'Opens this menu.',
+        'start': 'Start monitoring for the time to send reminders.',
+        'stop': 'Stop monitoring to send reminders.',
+        'exclude {name}': 'Exclude \'name\' from the reminder. In practice, this means the reminder will mention that they can\'t make it.',
+        'include {name}': 'If someone was excluded, this undoes that.',
+        'reset_exclude': 'Resets excluded users, so no one is excluded.',
+        'list_exclude': 'Lists who is currently excluded.'
+    }
+    w = 15
+    string = 'The prefix for all commands is `>>`.\n```'
+    for cmd in data:
+        string += f'{cmd:<{w}}    {data[cmd]}\n'
+    string += '```'
+    await message.channel.send(string)
+    
 
 # Discord stuff ============================
 
@@ -138,7 +156,7 @@ async def on_message(message):
         except KeyError:
             log(f'No command \'{command}\'')
         except:
-            traceback.print_exc()
+            log(traceback.format_exc())
 
 lastCond1 = False
 lastCond2 = False
