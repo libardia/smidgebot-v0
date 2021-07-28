@@ -123,6 +123,19 @@ class Reminders(Cog):
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
     
+    @command()
+    async def time(self, ctx):
+        '''
+        Show the currently set time when the reminder will be sent.
+        '''
+        logCommand(ctx, 'time')
+        id = ctx.channel.id
+        if id in self._invocations:
+            inv = self._invocations[id]
+            await ctx.channel.send(f'Right now, I\'m set to remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
+        else:
+            await ctx.channel.send('I\'m not actually keeping track right now.')
+
     async def doReminder(self, ctx, remtype='current', istest=False):
         log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = ctx.channel.id
