@@ -10,4 +10,5 @@ def log(msg):
         f.write(logged)
 
 def logCommand(ctx, name, *args):
-    log(f'Ran \'{name}\' on {ctx.channel.id} ({ctx.channel.guild.name}, #{ctx.channel.name}) with args: {list(args)}')
+    argstr = f' with args: {list(args)}' if len(args) != 0 else ''
+    log(f'Ran \'{name}\' on {ctx.channel.id} ({ctx.channel.guild.name}, #{ctx.channel.name}){argstr}')

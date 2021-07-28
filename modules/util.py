@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def englishArray(list, empty='none'):
     if len(list) == 0:
         return empty
@@ -23,7 +25,7 @@ def timecodeToTuple(code):
     try:
         dow, hm, ampm, tz = code.lower().split(' ')
         hours, minutes = (int(i) for i in hm.split(':'))
-        if ampm == 'pm':
+        if ampm == 'pm' and hours != 12:
             hours += 12
         hours += _TZS[tz]
         return _DAYS_DTOI[dow], hours, minutes
@@ -41,3 +43,8 @@ def tupleToEnglish(tup):
         if hours[i] > 12:
             hours[i] -= 12
     return f'{_DAYS_ITOD[dow]}:\n{hours[0]:02}:{minutes:02} {ampm[0]} PST\n{hours[1]:02}:{minutes:02} {ampm[1]} CST\n{hours[2]:02}:{minutes:02} {ampm[2]} EST'.upper()
+
+def testTime(remtime):
+    d, h, m = remtime
+    dt = datetime.now()
+    return dt.weekday() == d and dt.hour == h and dt.minute == m and dt.second == 0

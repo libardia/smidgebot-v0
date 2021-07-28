@@ -10,14 +10,13 @@ class Reminders(Cog):
     def __init__(self, bot: Bot):
         self._bot = bot
         self._invocations = {}
-        # By default, 7pm CST on Saturday
-        self._remtime = (5, 19, 0)
 
     @Cog.listener()
     async def on_ready(self):
-        # This is here because pylint can't tell that start() exists on _heartbeat, for some reason.
+        # This is here because pylint can't tell that start() exists on these, for some reason.
         # pylint: disable=no-member
         self._heartbeat.start()
+        self._check.start()
 
     @command()
     async def start(self, ctx: Context):
@@ -29,8 +28,9 @@ class Reminders(Cog):
         if id in self._invocations:
             await ctx.send('Don\'t worry, I\'m already keeping track.')
         else:
-            self._invocations[id] = Invocation(ctx)
-            await ctx.send(f'Ok, I\'ll remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(self._remtime)}')
+            inv = Invocation(ctx, log)
+            self._invocations[id] = inv
+            await ctx.send(f'Ok, I\'ll remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
     
     @command()
     async def stop(self, ctx: Context):
@@ -110,12 +110,18 @@ class Reminders(Cog):
         Time must be in the format DDD HH:MM [AM/PM] ZZZ, where DDD is the three letter day of week and ZZZ is the three letter time zone.
         '''
         timecode = ' '.join(timecode)
+        logCommand(ctx, 'change-time', timecode)
         newtime = util.timecodeToTuple(timecode)
-        if newtime is not None:
-            self._remtime = newtime
-            await ctx.send(f'Ok, the time I\'m waiting for has been changed to:\n{util.tupleToEnglish(self._remtime)}')
+        id = ctx.channel.id
+        if id in self._invocations:
+            if newtime is not None:
+                inv = self._invocations[id]
+                inv.setRemtime(newtime)
+                await ctx.send(f'Ok, the time I\'m waiting for has been changed to:\n{util.tupleToEnglish(inv.remtime)}')
+            else:
+                await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
         else:
-            await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
+            await ctx.channel.send('I\'m not actually keeping track right now.')
 
     
     @command(name='test')
@@ -134,10 +140,28 @@ class Reminders(Cog):
             await ctx.send(reminder)
         else:
             await ctx.send(f'Uh... no one told me to send reminders... I shouldn\'t be talking right now.')
+    
+    @command()
+    async def alive(self, ctx):
+        '''
+        The bot will reply that it's alive. Just to make sure it's running.
+        '''
+        logCommand(ctx, 'alive')
+        await ctx.send('Yes, hello, this is Smidge. The real Smidge, with all my squishy human insides. I am alive.')
 
-    @tasks.loop(seconds=1)
+    @tasks.loop(seconds=0.5)
     async def _check(self):
-        pass
+        # log('Check...')
+        for id in self._invocations:
+            inv = self._invocations[id]
+            earlyCond = util.testTime(inv.remtimeEarly)
+            mainCond = util.testTime(inv.remtime)
+            if earlyCond and not inv.earlyCond:
+                await self.doReminder(inv.ctx, 'early')
+            inv.earlyCond = earlyCond
+            if mainCond and not inv.mainCond:
+                await self.doReminder(inv.ctx)
+            inv.mainCond = mainCond
 
     @tasks.loop(hours=1)
     async def _heartbeat(self):
