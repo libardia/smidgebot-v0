@@ -122,18 +122,13 @@ class Reminders(Cog):
                 await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
-
     
-    @command(name='test')
-    async def doReminder(self, ctx, remtype='current'):
-        '''
-        Test the reminder; this will ping 'everyone', so be careful. Also, add 'early' as an argument to test the 30-minutes-before reminder.
-        '''
-        logCommand(ctx, 'doReminder', remtype)
+    async def doReminder(self, ctx, remtype='current', istest=False):
+        log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = ctx.channel.id
         if id in self._invocations:
             excluded = self._invocations[id].exclude
-            reminder = 'Hey @everyone, '
+            reminder = f'Hey {"[@]" if istest else "@"}everyone, '
             reminder += '30 minutes to D&D today!' if remtype == 'early' else 'D&D starting now!'
             if len(excluded) != 0:
                 reminder += f'\nOh, and by the way, {util.englishArray(excluded)} can\'t make it.'
@@ -141,6 +136,14 @@ class Reminders(Cog):
         else:
             await ctx.send(f'Uh... no one told me to send reminders... I shouldn\'t be talking right now.')
     
+    @command()
+    async def test(self, ctx, remtype='current'):
+        '''
+        Test the reminder; this will omit the ping to 'everyone'. Also, add 'early' as an argument to test the 30-minutes-before reminder.
+        '''
+        logCommand(ctx, 'test', remtype)
+        await self.doReminder(ctx, remtype, istest=True)
+
     @command()
     async def alive(self, ctx):
         '''
