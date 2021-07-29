@@ -184,10 +184,11 @@ class Reminders(Cog):
             ch = self._bot.get_channel(id)
             if first:
                 first = False
+            else:
                 rep += ',\n'
             rep += f'    {id}: {{\n'
-            rep += f'        server = \'{ch.guild.name}\''
-            rep += f'        channel = \'{ch.name}\''
+            rep += f'        server = \'{ch.guild.name}\',\n'
+            rep += f'        channel = \'{ch.name}\',\n'
             rep += f'        exclude = {inv.exclude},\n'
             rep += f'        remtime = {inv.remtime},\n'
             rep += f'        remtimeEarly = {inv.remtimeEarly}\n'
