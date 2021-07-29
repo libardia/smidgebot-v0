@@ -176,8 +176,18 @@ class Reminders(Cog):
     @command(hidden=True)
     async def dump(self, ctx):
         logCommand(ctx, 'dump')
-        log(f'Dumping {self._invocations}')
-        await ctx.send(f'```py\n{util.ppdict(self._invocations)}\n```')
+        log('Dumping invocations dict')
+        rep = 'Invocations:\n'
+        for id in self._invocations:
+            inv = self._invocations
+            ch = self._bot.get_channel(id)
+            rep += f'    {id} ({ch.guild.name}, #{ch.name}):'
+            rep += f'        exclude = {inv.exclude}'
+            rep += f'        mainCond = {inv.mainCond}'
+            rep += f'        earlyCond = {inv.earlyCond}'
+            rep += f'        remtime = {inv.remtime}'
+            rep += f'        remtimeEarly = {inv.remtimeEarly}'
+        await ctx.send(f'```\n{rep}\n```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):

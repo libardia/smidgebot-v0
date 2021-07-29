@@ -1,4 +1,3 @@
-import pprint
 from datetime import datetime
 
 def englishArray(list, empty='none'):
@@ -49,6 +48,3 @@ def testTime(remtime):
     d, h, m = remtime
     dt = datetime.now()
     return dt.weekday() == d and dt.hour == h and dt.minute == m and dt.second == 0
-
-def ppdict(dict):
-    return pprint.pformat(dict, indent=4)

@@ -19,6 +19,3 @@ class Invocation():
             m += 60
         self.remtimeEarly = (d, h, m)
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
-
-    def __repr__(self):
-        return str(self.__dict__)
