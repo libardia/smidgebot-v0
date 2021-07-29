@@ -1,3 +1,4 @@
+import traceback
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
@@ -202,7 +203,7 @@ class Reminders(Cog):
         try:
             await ctx.send(f'```{getlogs(int(lines))}```')
         except:
-            await ctx.send('Failed to get logs... sorry.')
+            await ctx.send(f'Failed to get logs... sorry. Exception: ```{traceback.format_exc()}```')
     
     @command(hidden=True)
     async def std(self, ctx, lines=100):
@@ -210,7 +211,7 @@ class Reminders(Cog):
         try:
             await ctx.send(f'```{getstd(int(lines))}```')
         except:
-            await ctx.send('Failed to get stdout... sorry.')
+            await ctx.send(f'Failed to get stdout... sorry. Exception: ```{traceback.format_exc()}```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
