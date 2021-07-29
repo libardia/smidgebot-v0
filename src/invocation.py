@@ -20,7 +20,7 @@ class Invocation():
         self.remtimeEarly = (d, h, m)
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
 
-    def asstr(self)
+    def asstr(self):
         attributes = dir(self)
         res = self.__class__.__name__ + "("
         first = True
