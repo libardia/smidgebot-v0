@@ -179,7 +179,7 @@ class Reminders(Cog):
         log('Dumping invocations dict')
         rep = 'Invocations:\n'
         for id in self._invocations:
-            inv = self._invocations
+            inv = self._invocations[id]
             ch = self._bot.get_channel(id)
             rep += f'    {id} ({ch.guild.name}, #{ch.name}):'
             rep += f'        exclude = {inv.exclude}'
