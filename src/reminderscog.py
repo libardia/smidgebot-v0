@@ -201,7 +201,7 @@ class Reminders(Cog):
     async def logs(self, ctx, lines=10):
         logCommand(ctx, 'logs', lines)
         try:
-            await ctx.send(f'```{getlogs(int(lines))}```')
+            await ctx.send(f'```\n{getlogs(int(lines))}\n```')
         except:
             await ctx.send(f'Failed to get logs... sorry. Exception: ```\n{traceback.format_exc()}\n```')
     
@@ -209,7 +209,7 @@ class Reminders(Cog):
     async def std(self, ctx, lines=10):
         logCommand(ctx, 'std', lines)
         try:
-            await ctx.send(f'```{getstd(int(lines))}```')
+            await ctx.send(f'```\n{getstd(int(lines))}\n```')
         except:
             await ctx.send(f'Failed to get stdout... sorry. Exception: ```\n{traceback.format_exc()}\n```')
 
