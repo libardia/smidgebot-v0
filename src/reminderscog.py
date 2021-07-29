@@ -201,17 +201,17 @@ class Reminders(Cog):
     async def logs(self, ctx, lines=10):
         logCommand(ctx, 'logs', lines)
         try:
-            await ctx.send(f'```\n{getlogs(int(lines))}\n```')
+            await ctx.send(f'```{getlogs(int(lines))}```')
         except:
-            await ctx.send(f'Failed to get logs... sorry. Exception: ```\n{util.etb(traceback.format_exc())}\n```')
+            await ctx.send(f'Failed to get logs... sorry. Exception: ```{util.etb(traceback.format_exc())}```')
     
     @command(hidden=True)
     async def std(self, ctx, lines=10):
         logCommand(ctx, 'std', lines)
         try:
-            await ctx.send(f'```\n{getstd(int(lines))}\n```')
+            await ctx.send(f'```{getstd(int(lines))}```')
         except:
-            await ctx.send(f'Failed to get stdout... sorry. Exception: ```\n{util.etb(traceback.format_exc())}\n```')
+            await ctx.send(f'Failed to get stdout... sorry. Exception: ```{util.etb(traceback.format_exc())}```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
