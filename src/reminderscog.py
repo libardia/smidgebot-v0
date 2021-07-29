@@ -144,18 +144,18 @@ class Reminders(Cog):
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
-    async def doReminder(self, ctx, remtype='current', istest=False):
+    async def doReminder(self, channel, remtype='current', istest=False):
         log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
-        id = ctx.channel.id
+        id = channel.id
         if id in self._invocations:
             excluded = self._invocations[id].exclude
             reminder = f'Hey {"[@]" if istest else "@"}everyone, '
             reminder += '30 minutes to D&D today!' if remtype == 'early' else 'D&D starting now!'
             if len(excluded) != 0:
                 reminder += f'\nOh, and by the way, {util.englishArray(excluded)} can\'t make it.'
-            await ctx.send(reminder)
+            await channel.send(reminder)
         else:
-            await ctx.send(f'Uh... no one told me to send reminders... I shouldn\'t be talking right now.')
+            await channel.send(f'Uh... no one told me to send reminders... I shouldn\'t be talking right now.')
     
     @command()
     async def test(self, ctx, remtype='current'):
@@ -163,7 +163,7 @@ class Reminders(Cog):
         Test the reminder; this will omit the ping to 'everyone'. Also, add 'early' as an argument to test the 30-minutes-before reminder.
         '''
         logCommand(ctx, 'test', remtype)
-        await self.doReminder(ctx, remtype, istest=True)
+        await self.doReminder(ctx.channel, remtype, istest=True)
 
     @command()
     async def alive(self, ctx):
@@ -177,14 +177,15 @@ class Reminders(Cog):
     async def _check(self):
         # log('Check...')
         for id in self._invocations:
+            ch = self._bot.get_channel(id)
             inv = self._invocations[id]
             earlyCond = util.testTime(inv.remtimeEarly)
             mainCond = util.testTime(inv.remtime)
             if earlyCond and not inv.earlyCond:
-                await self.doReminder(inv.ctx, 'early')
+                await self.doReminder(ch, 'early')
             inv.earlyCond = earlyCond
             if mainCond and not inv.mainCond:
-                await self.doReminder(inv.ctx)
+                await self.doReminder(ch)
             inv.mainCond = mainCond
 
     @tasks.loop(hours=1)
