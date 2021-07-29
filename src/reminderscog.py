@@ -198,7 +198,7 @@ class Reminders(Cog):
         await ctx.send(f'```py\n{rep}\n```')
     
     @command(hidden=True)
-    async def logs(self, ctx, lines=100):
+    async def logs(self, ctx, lines=10):
         logCommand(ctx, 'logs', lines)
         try:
             await ctx.send(f'```{getlogs(int(lines))}```')
@@ -206,7 +206,7 @@ class Reminders(Cog):
             await ctx.send(f'Failed to get logs... sorry. Exception: ```{traceback.format_exc()}```')
     
     @command(hidden=True)
-    async def std(self, ctx, lines=100):
+    async def std(self, ctx, lines=10):
         logCommand(ctx, 'std', lines)
         try:
             await ctx.send(f'```{getstd(int(lines))}```')
