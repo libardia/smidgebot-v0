@@ -1,5 +1,4 @@
 import discord
-import pprint
 from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
@@ -11,7 +10,6 @@ from invocation import Invocation
 class Reminders(Cog):
     def __init__(self, bot: Bot):
         self._bot = bot
-        self._pp = pprint.PrettyPrinter(indent=4)
         loaded = pickler.load()
         self._invocations = {} if loaded is None else loaded
 
@@ -179,7 +177,7 @@ class Reminders(Cog):
     async def dump(self, ctx):
         logCommand(ctx, 'dump')
         log(f'Dumping {self._invocations}')
-        await ctx.send(f'```py\n{self._pp.pprint(self._invocations)}\n```')
+        await ctx.send(f'```py\n{util.ppdict(self._invocations)}\n```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
