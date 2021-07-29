@@ -1,7 +1,7 @@
 import os
 import dotenv
 from discord.ext import commands
-from modules.logger import log
+from logger import log
 
 dotenv.load_dotenv()
 bot = commands.Bot(command_prefix='>>')

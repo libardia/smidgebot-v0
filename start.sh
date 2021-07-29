@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup python3 bot.py &
+nohup python ./src/bot.py &

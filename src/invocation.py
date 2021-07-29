@@ -1,7 +1,7 @@
+import logger
+
 class Invocation():
     def __init__(self, ctx, logger):
-        self.logger = logger
-        self.ctx = ctx
         self.exclude = []
         self.earlyCond = False
         self.mainCond = False
@@ -18,4 +18,4 @@ class Invocation():
             h -= 1
             m += 60
         self.remtimeEarly = (d, h, m)
-        self.logger(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
+        logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')

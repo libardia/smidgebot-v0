@@ -2,9 +2,9 @@ import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
-from modules import util
-from modules.logger import log, logCommand
-from modules.invocation import Invocation
+import util
+from logger import log, logCommand
+from invocation import Invocation
 
 class Reminders(Cog):
     def __init__(self, bot: Bot):
