@@ -187,7 +187,7 @@ class Reminders(Cog):
             rep += f'        earlyCond = {inv.earlyCond}'
             rep += f'        remtime = {inv.remtime}'
             rep += f'        remtimeEarly = {inv.remtimeEarly}'
-        await ctx.send(f'```\n{rep}\n```')
+        await ctx.send(f'```py\n{rep}\n```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
