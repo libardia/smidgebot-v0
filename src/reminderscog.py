@@ -195,7 +195,7 @@ class Reminders(Cog):
             rep += f'        \'earlyCond\': {inv.earlyCond}\n'
             rep +=  '    }'
         rep += '\n}'
-        await ctx.send(f'```py\n{rep}\n```')
+        await ctx.send(f'```py {rep}```')
     
     @command(hidden=True)
     async def logs(self, ctx, lines=10):
