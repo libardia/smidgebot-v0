@@ -1,25 +1,6 @@
 import logger
 
-class stringMe():
-        def __repr__(self):
-            attributes = dir(self)
-            res = self.__class__.__name__ + "("
-            first = True
-            for attr in attributes:
-                if attr.startswith("__") and attr.endswith("__"):
-                    continue
-
-                if(first):
-                    first = False
-                else:
-                    res += ", "
-
-                res += attr + " = " + str( getattr(self, attr))
-
-            res += ")"
-            return res
-
-class Invocation(stringMe):
+class Invocation():
     def __init__(self, ctx, logger):
         self.exclude = []
         self.earlyCond = False
@@ -39,3 +20,20 @@ class Invocation(stringMe):
         self.remtimeEarly = (d, h, m)
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
 
+    def __repr__(self):
+        attributes = dir(self)
+        res = self.__class__.__name__ + "("
+        first = True
+        for attr in attributes:
+            if attr.startswith("__") and attr.endswith("__"):
+                continue
+
+            if(first):
+                first = False
+            else:
+                res += ", "
+
+            res += attr + " = " + str( getattr(self, attr))
+
+        res += ")"
+        return res
