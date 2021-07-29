@@ -200,7 +200,7 @@ class Reminders(Cog):
     async def logs(self, ctx, lines=100):
         logCommand(ctx, 'logs', lines)
         try:
-            await ctx.send(getlogs(int(lines)))
+            await ctx.send(f'```{getlogs(int(lines))}```')
         except:
             await ctx.send('Failed to get logs... sorry.')
     
@@ -208,7 +208,7 @@ class Reminders(Cog):
     async def std(self, ctx, lines=100):
         logCommand(ctx, 'std', lines)
         try:
-            await ctx.send(getstd(int(lines)))
+            await ctx.send(f'```{getstd(int(lines))}```')
         except:
             await ctx.send('Failed to get stdout... sorry.')
 
