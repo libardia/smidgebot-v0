@@ -1,7 +1,7 @@
 import logger
 
 class Invocation():
-    def __init__(self, ctx, logger):
+    def __init__(self):
         self.exclude = []
         self.earlyCond = False
         self.mainCond = False
@@ -20,23 +20,12 @@ class Invocation():
         self.remtimeEarly = (d, h, m)
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
 
-    def asstr(self):
-        attributes = dir(self)
-        res = self.__class__.__name__ + "("
-        first = True
-        for attr in attributes:
-            if attr.startswith("__") and attr.endswith("__"):
-                continue
-
-            if(first):
-                first = False
-            else:
-                res += ", "
-
-            res += attr + " = " + str(getattr(self, attr))
-
-        res += ")"
-        return res
-
     def __repr__(self):
-        return self.asstr()
+        return f'''Invocation(
+            exclude={self.exclude}
+            earlyCond={self.earlyCond}
+            mainCond={self.mainCond}
+            remtime={self.remtime}
+            remtimeEarly={self.remtimeEarly}
+        )
+        '''

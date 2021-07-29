@@ -30,7 +30,7 @@ class Reminders(Cog):
         if id in self._invocations:
             await ctx.send('Don\'t worry, I\'m already keeping track.')
         else:
-            inv = Invocation(ctx, log)
+            inv = Invocation()
             self._invocations[id] = inv
             await ctx.send(f'Ok, I\'ll remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
             pickler.save(self._invocations)
