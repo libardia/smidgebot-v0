@@ -48,3 +48,6 @@ def testTime(remtime):
     d, h, m = remtime
     dt = datetime.now()
     return dt.weekday() == d and dt.hour == h and dt.minute == m and dt.second == 0
+
+def etb(orig):
+    return orig.replace('```', '`\u200d`\u200d`')
