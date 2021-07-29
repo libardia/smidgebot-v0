@@ -203,7 +203,7 @@ class Reminders(Cog):
         try:
             await ctx.send(f'```\n{getlogs(int(lines))}\n```')
         except:
-            await ctx.send(f'Failed to get logs... sorry. Exception: ```\n{traceback.format_exc()}\n```')
+            await ctx.send(f'Failed to get logs... sorry. Exception: ````\n{traceback.format_exc()}\n````')
     
     @command(hidden=True)
     async def std(self, ctx, lines=10):
@@ -211,7 +211,7 @@ class Reminders(Cog):
         try:
             await ctx.send(f'```\n{getstd(int(lines))}\n```')
         except:
-            await ctx.send(f'Failed to get stdout... sorry. Exception: ```\n{traceback.format_exc()}\n```')
+            await ctx.send(f'Failed to get stdout... sorry. Exception: ````\n{traceback.format_exc()}\n````')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
