@@ -181,13 +181,13 @@ class Reminders(Cog):
         for id in self._invocations:
             inv = self._invocations[id]
             ch = self._bot.get_channel(id)
-            rep += f'    {id} ({ch.guild.name}, #{ch.name}):'
-            rep += f'        exclude = {inv.exclude}'
-            rep += f'        mainCond = {inv.mainCond}'
-            rep += f'        earlyCond = {inv.earlyCond}'
-            rep += f'        remtime = {inv.remtime}'
-            rep += f'        remtimeEarly = {inv.remtimeEarly}'
-        await ctx.send(f'```py\n{rep}\n```')
+            rep += f'    {id} ({ch.guild.name}, #{ch.name}):\n'
+            rep += f'        exclude = {inv.exclude}\n'
+            rep += f'        mainCond = {inv.mainCond}\n'
+            rep += f'        earlyCond = {inv.earlyCond}\n'
+            rep += f'        remtime = {inv.remtime}\n'
+            rep += f'        remtimeEarly = {inv.remtimeEarly}\n'
+        await ctx.send(f'```\n{rep}```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
