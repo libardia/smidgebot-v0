@@ -20,7 +20,7 @@ class Invocation():
         self.remtimeEarly = (d, h, m)
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
     
-    def __str__(self):
+    def __repr__(self):
         string = 'Invocation('
         ', '.join('%s=%s' % item for item in vars(self).items())
         string += ')'
