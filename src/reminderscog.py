@@ -4,7 +4,7 @@ from discord.ext.commands import command, Cog, Context, Bot
 
 import util
 import pickler
-from logger import log, logCommand
+from logger import log, logCommand, getlogs, getstd
 from invocation import Invocation
 
 class Reminders(Cog):
@@ -190,9 +190,27 @@ class Reminders(Cog):
             rep += f'        \'exclude\': {inv.exclude},\n'
             rep += f'        \'remtime\': {inv.remtime},\n'
             rep += f'        \'remtimeEarly\': {inv.remtimeEarly}\n'
+            rep += f'        \'mainCond\': {inv.mainCond}\n'
+            rep += f'        \'earlyCond\': {inv.earlyCond}\n'
             rep +=  '    }'
         rep += '\n}'
         await ctx.send(f'```py\n{rep}\n```')
+    
+    @command(hidden=True)
+    async def logs(self, ctx, lines=100):
+        logCommand(ctx, 'logs', lines)
+        try:
+            await ctx.send(getlogs(int(lines)))
+        except:
+            await ctx.send('Failed to get logs... sorry.')
+    
+    @command(hidden=True)
+    async def std(self, ctx, lines=100):
+        logCommand(ctx, 'std', lines)
+        try:
+            await ctx.send(getstd(int(lines)))
+        except:
+            await ctx.send('Failed to get stdout... sorry.')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
