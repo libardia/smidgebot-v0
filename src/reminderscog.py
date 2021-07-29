@@ -3,13 +3,15 @@ from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
 import util
+import pickler
 from logger import log, logCommand
 from invocation import Invocation
 
 class Reminders(Cog):
     def __init__(self, bot: Bot):
         self._bot = bot
-        self._invocations = {}
+        loaded = pickler.load()
+        self._invocations = {} if loaded is None else loaded
 
     @Cog.listener()
     async def on_ready(self):
@@ -31,6 +33,7 @@ class Reminders(Cog):
             inv = Invocation(ctx, log)
             self._invocations[id] = inv
             await ctx.send(f'Ok, I\'ll remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
+            pickler.save(self._invocations)
     
     @command()
     async def stop(self, ctx: Context):
@@ -42,6 +45,7 @@ class Reminders(Cog):
         if id in self._invocations:
             self._invocations.pop(id)
             await ctx.send('Ok, I\'ll stop sending reminders.')
+            pickler.save(self._invocations)
         else:
             await ctx.send('I\'m not actually keeping track right now.')
     
@@ -55,12 +59,13 @@ class Reminders(Cog):
         if id in self._invocations:
             ex = self._invocations[id].exclude
             if name in ex:
-                await ctx.channel.send(f'{name} was already excluded.')
+                await ctx.send(f'{name} was already excluded.')
             else:
                 self._invocations[id].exclude.append(name)
-                await ctx.channel.send(f'Excluded {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                await ctx.send(f'Excluded {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                pickler.save(self._invocations)
         else:
-            await ctx.channel.send('I\'m not actually keeping track right now.')
+            await ctx.send('I\'m not actually keeping track right now.')
 
     @command()
     async def include(self, ctx, name):
@@ -73,11 +78,12 @@ class Reminders(Cog):
             try:
                 ex = self._invocations[id].exclude
                 ex.remove(name)
-                await ctx.channel.send(f'Re-included {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                await ctx.send(f'Re-included {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                pickler.save(self._invocations)
             except ValueError:
-                await ctx.channel.send(f'{name} wasn\'t excluded in the first place.')
+                await ctx.send(f'{name} wasn\'t excluded in the first place.')
         else:
-            await ctx.channel.send('I\'m not actually keeping track right now.')
+            await ctx.send('I\'m not actually keeping track right now.')
 
     @command(name='reset-exclude')
     async def resetExclude(self, ctx):
@@ -89,6 +95,7 @@ class Reminders(Cog):
         if id in self._invocations:
             self._invocations[id].exclude = []
             await ctx.channel.send('Excluded players reset.')
+            pickler.save(self._invocations)
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
@@ -118,6 +125,7 @@ class Reminders(Cog):
                 inv = self._invocations[id]
                 inv.setRemtime(newtime)
                 await ctx.send(f'Ok, the time I\'m waiting for has been changed to:\n{util.tupleToEnglish(inv.remtime)}')
+                pickler.save(self._invocations)
             else:
                 await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
         else:
