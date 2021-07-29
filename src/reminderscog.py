@@ -187,11 +187,11 @@ class Reminders(Cog):
             else:
                 rep += ',\n'
             rep += f'    {id}: {{\n'
-            rep += f'        server = \'{ch.guild.name}\',\n'
-            rep += f'        channel = \'{ch.name}\',\n'
-            rep += f'        exclude = {inv.exclude},\n'
-            rep += f'        remtime = {inv.remtime},\n'
-            rep += f'        remtimeEarly = {inv.remtimeEarly}\n'
+            rep += f'        \'server\': \'{ch.guild.name}\',\n'
+            rep += f'        \'channel\': \'{ch.name}\',\n'
+            rep += f'        \'exclude\': {inv.exclude},\n'
+            rep += f'        \'remtime\': {inv.remtime},\n'
+            rep += f'        \'remtimeEarly\': {inv.remtimeEarly}\n'
             rep +=  '    }'
         rep += '\n}'
         await ctx.send(f'```py\n{rep}\n```')
