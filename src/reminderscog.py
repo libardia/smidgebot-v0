@@ -177,6 +177,8 @@ class Reminders(Cog):
 
     @command(hidden=True)
     async def dump(self, ctx):
+        logCommand(ctx, 'dump')
+        log(f'Dumping {self._invocations}')
         await ctx.send(f'```py\n{self._pp.pprint(self._invocations)}\n```')
 
     @tasks.loop(seconds=0.5)
