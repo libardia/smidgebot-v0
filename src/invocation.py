@@ -21,11 +21,4 @@ class Invocation():
         logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
 
     def __repr__(self):
-        return f'''Invocation(
-            exclude={self.exclude}
-            earlyCond={self.earlyCond}
-            mainCond={self.mainCond}
-            remtime={self.remtime}
-            remtimeEarly={self.remtimeEarly}
-        )
-        '''
+        return str(self.__dict__)
