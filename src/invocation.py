@@ -22,6 +22,6 @@ class Invocation():
     
     def __repr__(self):
         string = 'Invocation('
-        ', '.join('%s=%s' % item for item in vars(self).items())
+        ', '.join(f'{item}' for item in vars(self))
         string += ')'
         return string
