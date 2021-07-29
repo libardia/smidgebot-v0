@@ -24,3 +24,4 @@ class Invocation():
         string = 'Invocation('
         ', '.join('%s=%s' % item for item in vars(self).items())
         string += ')'
+        return string
