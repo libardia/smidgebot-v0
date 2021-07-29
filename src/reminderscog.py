@@ -186,9 +186,7 @@ class Reminders(Cog):
                 first = False
             else:
                 rep += ',\n'
-            rep += f'    {id}: {{\n'
-            rep += f'        \'server\': \'{ch.guild.name}\',\n'
-            rep += f'        \'channel\': \'{ch.name}\',\n'
+            rep += f'    \'{ch.guild.name}, #{ch.name}\': {{\n'
             rep += f'        \'exclude\': {inv.exclude},\n'
             rep += f'        \'remtime\': {inv.remtime},\n'
             rep += f'        \'remtimeEarly\': {inv.remtimeEarly}\n'
