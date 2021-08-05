@@ -19,13 +19,9 @@ def logCommand(ctx, name, *args):
 def getlogs(n):
     if type(n) != int:
         return 'No funny business.'
-    cmd = f'tail --lines={n} {quote(LOGFILE)}'
-    print(cmd)
-    return subprocess.getoutput(cmd)
+    return subprocess.getoutput(f'tail --lines={n} {quote(LOGFILE)}')
 
 def getstd(n):
     if type(n) != int:
         return 'No funny business.'
-    cmd = f'tail --lines={n} {quote(STDOFILE)}'
-    print(cmd)
-    return subprocess.getoutput(cmd)
+    return subprocess.getoutput(f'tail --lines={n} {quote(STDOFILE)}')
