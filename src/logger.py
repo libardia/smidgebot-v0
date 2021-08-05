@@ -1,6 +1,7 @@
 import subprocess
 from datetime import datetime
 from discord.ext.commands import Context
+from shlex import quote
 
 LOGFILE = 'log.txt'
 STDOFILE = 'nohup.out'
@@ -17,10 +18,14 @@ def logCommand(ctx, name, *args):
 
 def getlogs(n):
     if type(n) != int:
-        return ''
-    return subprocess.getoutput(f'tail --lines={n} {LOGFILE}')
+        return 'No funny business.'
+    cmd = f'tail --lines={n} {quote(LOGFILE)}'
+    print(cmd)
+    return subprocess.getoutput(cmd)
 
 def getstd(n):
     if type(n) != int:
-        return ''
-    return subprocess.getoutput(f'tail --lines={n} {STDOFILE}')
+        return 'No funny business.'
+    cmd = f'tail --lines={n} {quote(STDOFILE)}'
+    print(cmd)
+    return subprocess.getoutput(cmd)
