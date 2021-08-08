@@ -1,5 +1,6 @@
 import traceback
 import discord
+from datetime import datetime
 from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
@@ -33,7 +34,8 @@ class Reminders(Cog):
         else:
             inv = Invocation()
             self._invocations[id] = inv
-            await ctx.send(f'Ok, I\'ll remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
+            stamp = util.tupleToNearestTimestamp(inv.remtime)
+            await ctx.send(f'Ok, I\'ll remind everyone on <t:{stamp}>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
             pickler.save(self._invocations)
     
     @command()
@@ -125,7 +127,8 @@ class Reminders(Cog):
             if newtime is not None:
                 inv = self._invocations[id]
                 inv.setRemtime(newtime)
-                await ctx.send(f'Ok, the time I\'m waiting for has been changed to:\n{util.tupleToEnglish(inv.remtime)}')
+                stamp = util.tupleToNearestTimestamp(newtime)
+                await ctx.send(f'Ok, the time I\'m waiting for has been changed to <t:{stamp}>, which is <t:{stamp}:R>.')
                 pickler.save(self._invocations)
             else:
                 await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
@@ -141,7 +144,8 @@ class Reminders(Cog):
         id = ctx.channel.id
         if id in self._invocations:
             inv = self._invocations[id]
-            await ctx.channel.send(f'Right now, I\'m set to remind everyone 30 minutes before and at the start of:\n{util.tupleToEnglish(inv.remtime)}')
+            stamp = util.tupleToNearestTimestamp(inv.remtime)
+            await ctx.channel.send(f'Right now, I\'m set to remind everyone on <t:{stamp}>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 

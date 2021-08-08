@@ -1,4 +1,5 @@
-from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from datetime import date, datetime
 
 def englishArray(list, empty='none'):
     if len(list) == 0:
@@ -43,6 +44,13 @@ def tupleToEnglish(tup):
         if hours[i] > 12:
             hours[i] -= 12
     return f'{_DAYS_ITOD[dow]}:\n{hours[0]:02}:{minutes:02} {ampm[0]} PST\n{hours[1]:02}:{minutes:02} {ampm[1]} CST\n{hours[2]:02}:{minutes:02} {ampm[2]} EST'.upper()
+
+def tupleToNearestTimestamp(tup):
+    dow, hours, minutes = tup
+    now = datetime.now()
+    sched = now + relativedelta(weekday=dow)
+    sched = sched.replace(hour=hours, minute=minutes, second=0)
+    return int(sched.timestamp())
 
 def testTime(remtime):
     d, h, m = remtime
