@@ -1,6 +1,5 @@
 import traceback
 import discord
-from datetime import datetime
 from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
