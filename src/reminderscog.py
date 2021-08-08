@@ -26,12 +26,14 @@ class Reminders(Cog):
         '''
         Start waiting for the correct time to send reminders.
         '''
-        logCommand(ctx, 'start')
+        await logCommand(ctx, 'start')
         id = ctx.channel.id
         if id in self._invocations:
             await ctx.send('Don\'t worry, I\'m already keeping track.')
         else:
             inv = Invocation()
+            # By default, 7pm CST on Saturday
+            await inv.setRemtime((5, 19, 0))
             self._invocations[id] = inv
             stamp = util.tupleToNearestTimestamp(inv.remtime)
             await ctx.send(f'Ok, I\'ll remind everyone on <t:{stamp}:F>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
@@ -42,7 +44,7 @@ class Reminders(Cog):
         '''
         Stop waiting for the correct time to send reminders.
         '''
-        logCommand(ctx, 'stop')
+        await logCommand(ctx, 'stop')
         id = ctx.channel.id
         if id in self._invocations:
             self._invocations.pop(id)
@@ -56,15 +58,15 @@ class Reminders(Cog):
         '''
         Exclude a player from the reminder; in practice, this means that the reminder will mention that they can't make it.
         '''
-        logCommand(ctx, 'exclude', name)
+        await logCommand(ctx, 'exclude', name)
         id = ctx.channel.id
         if id in self._invocations:
             ex = self._invocations[id].exclude
             if name in ex:
-                await ctx.send(f'{name} was already excluded.')
+                await ctx.send(util.discordEscape(f'{name} was already excluded.'))
             else:
                 self._invocations[id].exclude.append(name)
-                await ctx.send(f'Excluded {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                await ctx.send(util.discordEscape(f'Excluded {name}; I\'m now excluding {util.englishArray(ex, "no one")}.'))
                 pickler.save(self._invocations)
         else:
             await ctx.send('I\'m not actually keeping track right now.')
@@ -74,16 +76,16 @@ class Reminders(Cog):
         '''
         Include a player from the reminder, if they have been previously excluded.
         '''
-        logCommand(ctx, 'include', name)
+        await logCommand(ctx, 'include', name)
         id = ctx.channel.id
         if id in self._invocations:
             try:
                 ex = self._invocations[id].exclude
                 ex.remove(name)
-                await ctx.send(f'Re-included {name}; I\'m now excluding {util.englishArray(ex, "no one")}.')
+                await ctx.send(util.discordEscape(f'Re-included {name}; I\'m now excluding {util.englishArray(ex, "no one")}.'))
                 pickler.save(self._invocations)
             except ValueError:
-                await ctx.send(f'{name} wasn\'t excluded in the first place.')
+                await ctx.send(util.discordEscape(f'{name} wasn\'t excluded in the first place.'))
         else:
             await ctx.send('I\'m not actually keeping track right now.')
 
@@ -92,7 +94,7 @@ class Reminders(Cog):
         '''
         Clear the list of excluded players.
         '''
-        logCommand(ctx, 'reset-exclude')
+        await logCommand(ctx, 'reset-exclude')
         id = ctx.channel.id
         if id in self._invocations:
             self._invocations[id].exclude = []
@@ -106,10 +108,10 @@ class Reminders(Cog):
         '''
         Show the list of excluded players.
         '''
-        logCommand(ctx, 'list-exclude')
+        await logCommand(ctx, 'list-exclude')
         id = ctx.channel.id
         if id in self._invocations:
-            await ctx.channel.send(f'Currently excluding {util.englishArray(self._invocations[id].exclude, "no one")}.')
+            await ctx.channel.send(util.discordEscape(f'Currently excluding {util.englishArray(self._invocations[id].exclude, "no one")}.'))
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
@@ -119,18 +121,18 @@ class Reminders(Cog):
         Time must be in the format DDD HH:MM [AM/PM] ZZZ, where DDD is the three letter day of week and ZZZ is the three letter time zone.
         '''
         timecode = ' '.join(timecode)
-        logCommand(ctx, 'change-time', timecode)
+        await logCommand(ctx, 'change-time', timecode)
         newtime = util.timecodeToTuple(timecode)
         id = ctx.channel.id
         if id in self._invocations:
             if newtime is not None:
                 inv = self._invocations[id]
-                inv.setRemtime(newtime)
+                await inv.setRemtime(newtime)
                 stamp = util.tupleToNearestTimestamp(newtime)
                 await ctx.send(f'Ok, the time I\'m waiting for has been changed to <t:{stamp}:F>, which is <t:{stamp}:R>.')
                 pickler.save(self._invocations)
             else:
-                await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
+                await ctx.send(f'Sorry, I couldn\'t understand ``\u200d{util.etb(timecode)}\u200d`` as a time.')
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
     
@@ -139,7 +141,7 @@ class Reminders(Cog):
         '''
         Show the currently set time when the reminder will be sent.
         '''
-        logCommand(ctx, 'time')
+        await logCommand(ctx, 'time')
         id = ctx.channel.id
         if id in self._invocations:
             inv = self._invocations[id]
@@ -149,14 +151,15 @@ class Reminders(Cog):
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
     async def doReminder(self, channel, remtype='current', istest=False):
-        log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
+        await log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = channel.id
         if id in self._invocations:
             excluded = self._invocations[id].exclude
-            reminder = f'Hey {"[@]" if istest else "@"}everyone, '
+            at = '@\u200d' if istest else '@'
+            reminder = f'Hey {at}everyone, '
             reminder += '30 minutes to D&D today!' if remtype == 'early' else 'D&D starting now!'
             if len(excluded) != 0:
-                reminder += f'\nOh, and by the way, {util.englishArray(excluded)} can\'t make it.'
+                reminder += f'\nOh, and by the way, {util.discordEscape(util.englishArray(excluded))} can\'t make it.'
             await channel.send(reminder)
         else:
             await channel.send(f'Uh... no one told me to send reminders... I shouldn\'t be talking right now.')
@@ -166,7 +169,7 @@ class Reminders(Cog):
         '''
         Test the reminder; this will omit the ping to 'everyone'. Also, add 'early' as an argument to test the 30-minutes-before reminder.
         '''
-        logCommand(ctx, 'test', remtype)
+        await logCommand(ctx, 'test', remtype)
         await self.doReminder(ctx.channel, remtype, istest=True)
 
     @command()
@@ -174,13 +177,13 @@ class Reminders(Cog):
         '''
         The bot will reply that it's alive. Just to make sure it's running.
         '''
-        logCommand(ctx, 'alive')
+        await logCommand(ctx, 'alive')
         await ctx.send('Yes, hello, this is Smidge. The real Smidge, with all my squishy human insides. I am alive.')
 
     @command(hidden=True)
     async def dump(self, ctx):
-        logCommand(ctx, 'dump')
-        log('Dumping invocations dict')
+        await logCommand(ctx, 'dump')
+        await log('Dumping invocations dict')
         rep = 'invocations = {\n'
         first = True
         for id in self._invocations:
@@ -198,27 +201,27 @@ class Reminders(Cog):
             rep += f'        \'earlyCond\': {inv.earlyCond}\n'
             rep +=  '    }'
         rep += '\n}'
-        await ctx.send(f'```py\n{rep}```')
+        await ctx.send(f'```py\n{util.etb(rep)}```')
     
     @command(hidden=True)
     async def logs(self, ctx, lines=10):
-        logCommand(ctx, 'logs', lines)
+        await logCommand(ctx, 'logs', lines)
         try:
-            await ctx.send(f'```{getlogs(int(lines))}```')
+            await ctx.send(f'```{util.etb(getlogs(int(lines)))}```')
         except:
             await ctx.send(f'Failed to get logs... sorry.\nException: ```{util.etb(traceback.format_exc())}```')
     
     @command(hidden=True)
     async def std(self, ctx, lines=10):
-        logCommand(ctx, 'std', lines)
+        await logCommand(ctx, 'std', lines)
         try:
-            await ctx.send(f'```{getstd(int(lines))}```')
+            await ctx.send(f'```{util.etb(getstd(int(lines)))}```')
         except:
             await ctx.send(f'Failed to get stdout... sorry.\nException: ```{util.etb(traceback.format_exc())}```')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
-        # log('Check...')
+        # await log('Check...')
         for id in self._invocations:
             ch = self._bot.get_channel(id)
             inv = self._invocations[id]
@@ -233,7 +236,7 @@ class Reminders(Cog):
 
     @tasks.loop(hours=1)
     async def _heartbeat(self):
-        log('Bot is alive.')
+        await log('Bot is alive.')
         
 def setup(bot):
     bot.add_cog(Reminders(bot))

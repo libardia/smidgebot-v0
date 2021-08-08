@@ -59,3 +59,10 @@ def testTime(remtime):
 
 def etb(orig):
     return orig.replace('```', '`\u200d`\u200d`')
+
+def discordEscape(orig):
+    esc = ('\\', '*', '_', '|', '`', '~')
+    escaped = orig
+    for c in esc:
+        escaped = escaped.replace(c, f'\\{c}')
+    return escaped

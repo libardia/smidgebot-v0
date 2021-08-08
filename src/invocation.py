@@ -7,10 +7,8 @@ class Invocation():
         self.mainCond = False
         self.remtime = None
         self.remtimeEarly = None
-        # By default, 7pm CST on Saturday
-        self.setRemtime((5, 19, 0))
     
-    def setRemtime(self, remtime):
+    async def setRemtime(self, remtime):
         self.remtime = remtime
         d, h, m = remtime
         m -= 30
@@ -18,4 +16,4 @@ class Invocation():
             h -= 1
             m += 60
         self.remtimeEarly = (d, h, m)
-        logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
+        await logger.log(f'Early time set to {self.remtimeEarly} and reminder time set to {self.remtime}')
