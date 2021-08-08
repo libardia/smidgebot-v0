@@ -35,7 +35,7 @@ class Reminders(Cog):
             inv = Invocation()
             self._invocations[id] = inv
             stamp = util.tupleToNearestTimestamp(inv.remtime)
-            await ctx.send(f'Ok, I\'ll remind everyone on <t:{stamp}>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
+            await ctx.send(f'Ok, I\'ll remind everyone on <t:{stamp}:F>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
             pickler.save(self._invocations)
     
     @command()
@@ -128,7 +128,7 @@ class Reminders(Cog):
                 inv = self._invocations[id]
                 inv.setRemtime(newtime)
                 stamp = util.tupleToNearestTimestamp(newtime)
-                await ctx.send(f'Ok, the time I\'m waiting for has been changed to <t:{stamp}>, which is <t:{stamp}:R>.')
+                await ctx.send(f'Ok, the time I\'m waiting for has been changed to <t:{stamp}:F>, which is <t:{stamp}:R>.')
                 pickler.save(self._invocations)
             else:
                 await ctx.send(f'Sorry, I couldn\'t understand `{timecode}` as a time.')
@@ -145,7 +145,7 @@ class Reminders(Cog):
         if id in self._invocations:
             inv = self._invocations[id]
             stamp = util.tupleToNearestTimestamp(inv.remtime)
-            await ctx.channel.send(f'Right now, I\'m set to remind everyone on <t:{stamp}>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
+            await ctx.channel.send(f'Right now, I\'m set to remind everyone on <t:{stamp}:F>, which is <t:{stamp}:R>. I\'ll also send a reminder 30 minutes before that.')
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
