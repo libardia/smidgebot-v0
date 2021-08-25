@@ -5,7 +5,7 @@ from discord.ext import commands
 
 dotenv.load_dotenv()
 bot = commands.Bot(command_prefix='>>')
-bot.load_extension('reminderscog')
+bot.load_extension('cog_reminders')
 
 @bot.event
 async def on_ready():
