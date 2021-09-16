@@ -5,7 +5,7 @@ from discord.ext.commands import Bot
 from shlex import quote
 
 LOGFILE = 'log.txt'
-LOGCHANNEL = 873994114142724117
+LOGCHANNEL = 888134572120891452
 STDOFILE = 'nohup.out'
 _logchannel = None
 
