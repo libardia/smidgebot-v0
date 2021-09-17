@@ -2,19 +2,23 @@ import subprocess
 import util
 from datetime import datetime
 from discord.ext.commands import Bot
+from discord.channel import TextChannel
 from shlex import quote
 
 LOGFILE = 'log.txt'
 LOGCHANNEL_ID = 888134572120891452
 STDOFILE = 'nohup.out'
-_logchannel = None
+DISCORD_LOG_LIFETIME = 10
+# DISCORD_LOG_LIFETIME = 7 * 24 * 60 * 60 # one week in seconds
+
+_logchannel: TextChannel = None
 
 def setup(bot: Bot):
     global _logchannel
     _logchannel = bot.get_channel(LOGCHANNEL_ID)
 
 async def logchannel(msg):
-    await _logchannel.send(f'```{util.etb(msg)}```')
+    await _logchannel.send(f'```{util.etb(msg)}```', delete_after=DISCORD_LOG_LIFETIME)
 
 async def log(msg):
     with open(LOGFILE, 'a') as f:
