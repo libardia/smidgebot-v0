@@ -8,8 +8,7 @@ from shlex import quote
 LOGFILE = 'log.txt'
 LOGCHANNEL_ID = 888134572120891452
 STDOFILE = 'nohup.out'
-DISCORD_LOG_LIFETIME = 10
-# DISCORD_LOG_LIFETIME = 7 * 24 * 60 * 60 # one week in seconds
+DISCORD_LOG_LIFETIME = 7 * 24 * 60 * 60 # one week in seconds
 
 _logchannel: TextChannel = None
 
