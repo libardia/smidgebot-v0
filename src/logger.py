@@ -5,13 +5,13 @@ from discord.ext.commands import Bot
 from shlex import quote
 
 LOGFILE = 'log.txt'
-LOGCHANNEL = 888134572120891452
+LOGCHANNEL_ID = 888134572120891452
 STDOFILE = 'nohup.out'
 _logchannel = None
 
 def setup(bot: Bot):
     global _logchannel
-    _logchannel = bot.get_channel(LOGCHANNEL)
+    _logchannel = bot.get_channel(LOGCHANNEL_ID)
 
 async def logchannel(msg):
     await _logchannel.send(f'```{util.etb(msg)}```')
