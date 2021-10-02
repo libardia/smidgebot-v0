@@ -153,10 +153,9 @@ class Reminders(Cog):
     @command()
     async def skip(self, ctx, number=None):
         '''
-        Skip the next [number] sessions. If you don't give a number, tells you how many future sessions will be skipped. If instead of a number you write 'reset',
-        the number of skipped sessions will be reset to 0.
-        Also, when you call this multiple times, the skipped sessions add together; so '>>skip 2' followed by '>>skip 1' will result in the next
-        three sessions being skipped.
+        Skip the next [number] sessions. If you don't give a number, tells you how many future sessions will be skipped.
+        If instead of a number you write 'reset', the number of skipped sessions will be reset to 0.
+        Also, when you call this multiple times, the skipped sessions add together; so '>>skip 2' followed by '>>skip 1' will result in the next three sessions being skipped.
         '''
         await logCommand(ctx, 'skip', number)
         id = ctx.channel.id
