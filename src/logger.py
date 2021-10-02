@@ -1,6 +1,6 @@
 import subprocess
 import util
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from discord import HTTPException
 from discord.ext.commands import Bot
 from discord.channel import TextChannel
@@ -24,7 +24,7 @@ async def cleanLogs(all=False):
     if all:
         messages = await _logchannel.history(limit=None, oldest_first=True).flatten()
     else:
-        oneWeekAgo = datetime.now(timezone.utc) - timedelta(weeks=1)
+        oneWeekAgo = datetime.utcnow() - timedelta(weeks=1)
         messages = await _logchannel.history(limit=None, oldest_first=True, before=oneWeekAgo).flatten()
     counter = 0
     for m in messages:
