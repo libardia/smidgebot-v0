@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup python ./src/smidgebot.py &
+nohup python3.9 ./src/smidgebot.py &
