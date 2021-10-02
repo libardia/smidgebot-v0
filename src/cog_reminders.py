@@ -1,10 +1,11 @@
 import traceback
 import discord
-from discord.ext import commands, tasks, Message
+from discord.ext import commands, tasks
 from discord.ext.commands import command, Cog, Context, Bot
 
 import util
 import pickler
+import logger
 from logger import log, logCommand, getlogs, getstd
 from invocation import Invocation
 
@@ -218,11 +219,11 @@ class Reminders(Cog):
             await ctx.send(f'```{util.etb(getstd(int(lines)))}```')
         except:
             await ctx.send(f'Failed to get stdout... sorry.\nException: ```{util.etb(traceback.format_exc())}```')
-    
+
     @command(hidden=True, name='del-logs')
     async def delLogs(self, ctx: Context):
         async with ctx.typing():
-            for m in await ctx.history().flatten():
+            for m in await self._bot.get_channel(logger.LOGCHANNEL_ID).history().flatten():
                 m.delete()
             await ctx.send('Done.')
 
