@@ -164,10 +164,12 @@ class Reminders(Cog):
             if number is None:
                 skip = inv.skipSessions
                 await ctx.send(f'The next {skip} session{"" if skip == 1 else "s"} will be skipped.')
+                return
             elif number == 'reset':
                 inv.skipSessions = 0
                 pickler.save(self._invocations)
                 await ctx.send('Ok, I won\'t skip any future sessions.')
+                return
             number = int(number)
             inv.skipSessions += number
             skip = inv.skipSessions
