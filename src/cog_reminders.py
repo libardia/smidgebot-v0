@@ -225,7 +225,7 @@ class Reminders(Cog):
         await logCommand(ctx, 'delete-logs')
         await ctx.send('Discord will rate limit this operation, so be aware this could take some time.\nCollecting logs...')
         async with ctx.typing():
-            messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history().flatten()
+            messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None).flatten()
             await ctx.send(f'Trying to delete {len(messages)} logs...')
             for m in messages:
                 await m.delete()
