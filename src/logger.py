@@ -1,6 +1,7 @@
 import subprocess
 import util
-from datetime import datetime
+from datetime import datetime, timedelta
+from discord import HTTPException
 from discord.ext.commands import Bot
 from discord.channel import TextChannel
 from shlex import quote
@@ -18,6 +19,22 @@ def setup(bot: Bot):
 
 async def logchannel(msg):
     await _logchannel.send(f'```{util.etb(msg)}```', delete_after=DISCORD_LOG_LIFETIME)
+
+async def cleanLogs(all=False):
+    if all:
+        messages = await _logchannel.history(limit=None, oldest_first=True).flatten()
+    else:
+        oneWeekAgo = datetime.now() - timedelta(weeks=1)
+        messages = await _logchannel.history(limit=None, oldest_first=True, before=oneWeekAgo).flatten()
+    counter = 0
+    for m in messages:
+        try:
+            await m.delete()
+            counter += 1
+        except HTTPException:
+            pass
+    return counter
+
 
 async def log(msg):
     with open(LOGFILE, 'a') as f:

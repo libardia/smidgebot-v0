@@ -5,9 +5,7 @@ from discord.ext.commands import command, Cog, Context, Bot
 
 import util
 import pickler
-import logger
-import datetime as dt
-from logger import log, logCommand, getlogs, getstd
+from logger import log, logCommand, getlogs, getstd, cleanLogs
 from invocation import Invocation
 
 class Reminders(Cog):
@@ -224,19 +222,11 @@ class Reminders(Cog):
     @command(hidden=True, name='del-logs')
     async def delLogs(self, ctx: Context, arg=''):
         await logCommand(ctx, 'delete-logs', arg)
-        delAll = True if arg == 'all' else False
-        await ctx.send(f'Deleting {"ALL logs" if delAll else "all logs older than a week"}. Discord will rate limit this operation, so be aware this could take some time.')
+        all = True if arg == 'all' else False
+        await ctx.send(f'Deleting {"ALL logs" if all else "all logs older than a week"}. Discord will rate limit this operation, so be aware this could take some time.')
         async with ctx.typing():
-            await ctx.send('Collecting logs...')
-            if delAll:
-                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True).flatten()
-            else:
-                oneWeekAgo = dt.datetime.now() - dt.timedelta(weeks=1)
-                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True, before=oneWeekAgo).flatten()
-            await ctx.send(f'Trying to delete {len(messages)} logs...')
-            for m in messages:
-                await m.delete()
-            await ctx.send('Done deleting logs.')
+            n = await cleanLogs(all)
+            await ctx.send(f'Deleted `{n}` logs.')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
