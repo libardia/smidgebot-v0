@@ -180,14 +180,14 @@ class Reminders(Cog):
         await log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = channel.id
         if id in self._invocations:
-            if not istest and self._invocations.skipSessions > 0:
+            if not istest and self._invocations[id].skipSessions > 0:
                 # If this reminder is not a test, and there are any future sessions to be skipped,
                 # the 'return' at the end of this block makes sure no reminder goes out.
                 if remtype == 'current':
                     # But the counter for skipped sessions will only go down if this is ALSO a
                     # current reminder. The early reminder shouldn't count it down, or else
                     # it would count down twice as fast.
-                    self._invocations.skipSessions -= 1
+                    self._invocations[id].skipSessions -= 1
                     pickler.save(self._invocations)
                 return
             excluded = self._invocations[id].exclude
