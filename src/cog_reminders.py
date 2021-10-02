@@ -169,11 +169,11 @@ class Reminders(Cog):
                 inv.skipSessions = 0
                 pickler.save(self._invocations)
                 await ctx.send('Ok, I won\'t skip any future sessions.')
-            elif type(number) == int:
-                inv.skipSessions += number
-                skip = inv.skipSessions
-                pickler.save(self._invocations)
-                await ctx.send(f'Ok, so in total, the next {skip} session{"" if skip == 1 else "s"} will be skipped.')
+            number = int(number)
+            inv.skipSessions += number
+            skip = inv.skipSessions
+            pickler.save(self._invocations)
+            await ctx.send(f'Ok, so in total, the next {skip} session{"" if skip == 1 else "s"} will be skipped.')
 
     async def doReminder(self, channel, remtype='current', istest=False):
         await log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
