@@ -225,9 +225,10 @@ class Reminders(Cog):
             rep += f'    \'{ch.guild.name}, #{ch.name}\': {{\n'
             rep += f'        \'exclude\': {inv.exclude},\n'
             rep += f'        \'remtime\': {inv.remtime},\n'
-            rep += f'        \'remtimeEarly\': {inv.remtimeEarly}\n'
-            rep += f'        \'mainCond\': {inv.mainCond}\n'
-            rep += f'        \'earlyCond\': {inv.earlyCond}\n'
+            rep += f'        \'remtimeEarly\': {inv.remtimeEarly},\n'
+            rep += f'        \'mainCond\': {inv.mainCond},\n'
+            rep += f'        \'earlyCond\': {inv.earlyCond},\n'
+            rep += f'        \'skipSessions\': {inv.skipSessions}\n'
             rep +=  '    }'
         rep += '\n}'
         await ctx.send(f'```py\n{util.etb(rep)}```')
