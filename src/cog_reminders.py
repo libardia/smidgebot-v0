@@ -222,6 +222,7 @@ class Reminders(Cog):
 
     @command(hidden=True, name='del-logs')
     async def delLogs(self, ctx: Context):
+        logCommand(ctx, 'delete-logs')
         async with ctx.typing():
             for m in await self._bot.get_channel(logger.LOGCHANNEL_ID).history().flatten():
                 await m.delete()
