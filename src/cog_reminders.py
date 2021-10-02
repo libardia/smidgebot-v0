@@ -178,14 +178,20 @@ class Reminders(Cog):
         await log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = channel.id
         if id in self._invocations:
-            if self._invocations.skipSessions > 0:
-                self._invocations.skipSessions -= 1
-                pickler.save(self._invocations)
+            if not istest and self._invocations.skipSessions > 0:
+                # If this reminder is not a test, and there are any future sessions to be skipped,
+                # the 'return' at the end of this block makes sure no reminder goes out.
+                if remtype == 'current':
+                    # But the counter for skipped sessions will only go down if this is ALSO a
+                    # current reminder. The early reminder shouldn't count it down, or else
+                    # it would count down twice as fast.
+                    self._invocations.skipSessions -= 1
+                    pickler.save(self._invocations)
                 return
             excluded = self._invocations[id].exclude
             at = '@\u200d' if istest else '@'
             reminder = f'Hey {at}everyone, '
-            reminder += '30 minutes to D&D today!' if remtype == 'early' else 'D&D starting now!'
+            reminder += 'D&D starting now!' if remtype == 'current' else '30 minutes to D&D today!'
             if len(excluded) != 0:
                 reminder += f'\nOh, and by the way, {util.discordEscape(util.englishArray(excluded))} can\'t make it.'
             await channel.send(reminder)
