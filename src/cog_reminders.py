@@ -224,8 +224,8 @@ class Reminders(Cog):
     async def delLogs(self, ctx: Context):
         async with ctx.typing():
             for m in await self._bot.get_channel(logger.LOGCHANNEL_ID).history().flatten():
-                m.delete()
-            await ctx.send('Done.')
+                await m.delete()
+            await ctx.send('Done deleting logs.')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
