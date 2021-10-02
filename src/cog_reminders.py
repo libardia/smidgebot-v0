@@ -1,6 +1,6 @@
 import traceback
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks, Message
 from discord.ext.commands import command, Cog, Context, Bot
 
 import util
@@ -218,6 +218,13 @@ class Reminders(Cog):
             await ctx.send(f'```{util.etb(getstd(int(lines)))}```')
         except:
             await ctx.send(f'Failed to get stdout... sorry.\nException: ```{util.etb(traceback.format_exc())}```')
+    
+    @command(hidden=True, name='del-logs')
+    async def delLogs(self, ctx: Context):
+        async with ctx.typing():
+            for m in await ctx.history().flatten():
+                m.delete()
+            await ctx.send('Done.')
 
     @tasks.loop(seconds=0.5)
     async def _check(self):
@@ -237,6 +244,6 @@ class Reminders(Cog):
     @tasks.loop(hours=1)
     async def _heartbeat(self):
         await log('Bot is alive.')
-        
+    
 def setup(bot):
     bot.add_cog(Reminders(bot))
