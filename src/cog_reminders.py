@@ -232,7 +232,7 @@ class Reminders(Cog):
                 messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True).flatten()
             else:
                 oneWeekAgo = dt.datetime.now() - dt.timedelta(weeks=1)
-                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True, after=oneWeekAgo).flatten()
+                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True, before=oneWeekAgo).flatten()
             await ctx.send(f'Trying to delete {len(messages)} logs...')
             for m in messages:
                 await m.delete()
