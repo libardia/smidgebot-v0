@@ -150,10 +150,39 @@ class Reminders(Cog):
         else:
             await ctx.channel.send('I\'m not actually keeping track right now.')
 
+    @command()
+    async def skip(self, ctx, number=None):
+        '''
+        Skip the next [number] sessions. If you don't give a number, tells you how many future sessions will be skipped. If instead of a number you write 'reset',
+        the number of skipped sessions will be reset to 0.
+        Also, when you call this multiple times, the skipped sessions add together; so '>>skip 2' followed by '>>skip 1' will result in the next
+        three sessions being skipped.
+        '''
+        await logCommand(ctx, 'skip', number)
+        id = ctx.channel.id
+        inv = self._invocations[id]
+        if id in self._invocations:
+            if number is None:
+                skip = inv.skipSessions
+                await ctx.send(f'The next {skip} session{"" if skip == 1 else "s"} will be skipped.')
+            elif number == 'reset':
+                inv.skipSessions = 0
+                pickler.save(self._invocations)
+                await ctx.send('Ok, I won\'t skip any future sessions.')
+            elif type(number) == int:
+                inv.skipSessions += number
+                skip = inv.skipSessions
+                pickler.save(self._invocations)
+                await ctx.send(f'Ok, so in total, the next {skip} session{"" if skip == 1 else "s"} will be skipped.')
+
     async def doReminder(self, channel, remtype='current', istest=False):
         await log(f'Performing reminder of type "{remtype}"{" as a test" if istest else ""}...')
         id = channel.id
         if id in self._invocations:
+            if self._invocations.skipSessions > 0:
+                self._invocations.skipSessions -= 1
+                pickler.save(self._invocations)
+                return
             excluded = self._invocations[id].exclude
             at = '@\u200d' if istest else '@'
             reminder = f'Hey {at}everyone, '

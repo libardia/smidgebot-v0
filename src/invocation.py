@@ -7,6 +7,7 @@ class Invocation():
         self.mainCond = False
         self.remtime = None
         self.remtimeEarly = None
+        self.skipSessions = 0
     
     async def setRemtime(self, remtime):
         self.remtime = remtime
