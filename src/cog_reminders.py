@@ -6,6 +6,7 @@ from discord.ext.commands import command, Cog, Context, Bot
 import util
 import pickler
 import logger
+import datetime as dt
 from logger import log, logCommand, getlogs, getstd
 from invocation import Invocation
 
@@ -221,12 +222,17 @@ class Reminders(Cog):
             await ctx.send(f'Failed to get stdout... sorry.\nException: ```{util.etb(traceback.format_exc())}```')
 
     @command(hidden=True, name='del-logs')
-    async def delLogs(self, ctx: Context):
-        await logCommand(ctx, 'delete-logs')
-        await ctx.send('Discord will rate limit this operation, so be aware this could take some time.')
+    async def delLogs(self, ctx: Context, arg=''):
+        await logCommand(ctx, 'delete-logs', arg)
+        delAll = True if arg == 'all' else False
+        await ctx.send(f'Deleting {"ALL logs" if delAll else "all logs older than a week"}. Discord will rate limit this operation, so be aware this could take some time.')
         async with ctx.typing():
             await ctx.send('Collecting logs...')
-            messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None).flatten()
+            if delAll:
+                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True).flatten()
+            else:
+                oneWeekAgo = dt.datetime.now() - dt.timedelta(weeks=1)
+                messages = await self._bot.get_channel(logger.LOGCHANNEL_ID).history(limit=None, oldest_first=True, after=oneWeekAgo).flatten()
             await ctx.send(f'Trying to delete {len(messages)} logs...')
             for m in messages:
                 await m.delete()
