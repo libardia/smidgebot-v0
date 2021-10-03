@@ -282,8 +282,9 @@ class Reminders(Cog):
 
     @tasks.loop(hours=1)
     async def _heartbeat(self):
+        await log('Bot is alive.')
         n = await cleanLogs()
-        await log(f'Bot is alive. Deleted {n} old logs.')
+        await log(f'Deleted {n} old logs.')
     
 def setup(bot):
     bot.add_cog(Reminders(bot))
