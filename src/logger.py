@@ -6,9 +6,9 @@ from discord.ext.commands import Bot
 from discord.channel import TextChannel
 from shlex import quote
 
-LOGFILE = '~/logs/smidgebot.log'
+LOGFILE = 'smidgebot.log'
 LOGCHANNEL_ID = 888134572120891452
-STDOFILE = '~/logs/smidgebot.out'
+STDOFILE = 'smidgebot.out'
 DISCORD_LOG_LIFETIME = 7 * 24 * 60 * 60 # one week in seconds
 
 _logchannel: TextChannel = None
